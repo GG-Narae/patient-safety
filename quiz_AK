@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 환자안전 터치 퀴즈</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 800px;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      padding: 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Start Screen */
+    .title {
+      font-size: 2.2rem;
+      color: #1e293b;
+      margin-bottom: 16px;
+      word-break: keep-all;
+    }
+
+    .subtitle {
+      font-size: 1.3rem;
+      color: #64748b;
+      margin-bottom: 40px;
+      word-break: keep-all;
+    }
+
+    .btn-start {
+      background-color: #2563eb;
+      color: white;
+      font-size: 1.8rem;
+      font-weight: bold;
+      padding: 20px 60px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+      transition: transform 0.1s;
+    }
+
+    .btn-start:active {
+      transform: scale(0.96);
+    }
+
+    /* Quiz Screen */
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background-color: #e2e8f0;
+      border-radius: 6px;
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+
+    .progress {
+      width: 0%;
+      height: 100%;
+      background-color: #2563eb;
+      transition: width 0.3s ease;
+    }
+
+    .q-number {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #2563eb;
+      margin-bottom: 12px;
+    }
+
+    .question {
+      font-size: 1.8rem;
+      color: #0f172a;
+      line-height: 1.5;
+      margin-bottom: 40px;
+      word-break: keep-all;
+      min-height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ox-container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .btn-ox {
+      flex: 1;
+      height: 160px;
+      font-size: 4rem;
+      font-weight: bold;
+      border: 4px solid #cbd5e1;
+      border-radius: 20px;
+      background-color: #f8fafc;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-o {
+      color: #16a34a;
+    }
+
+    .btn-x {
+      color: #dc2626;
+    }
+
+    .btn-ox:active {
+      transform: scale(0.95);
+      background-color: #e2e8f0;
+    }
+
+    /* Modal / Feedback Overlay */
+    .feedback-modal {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.98);
+      padding: 40px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .feedback-icon {
+      font-size: 4rem;
+      margin-bottom: 10px;
+    }
+
+    .feedback-title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+
+    .feedback-desc {
+      font-size: 1.3rem;
+      color: #334155;
+      line-height: 1.6;
+      margin-bottom: 30px;
+      word-break: keep-all;
+    }
+
+    .btn-next {
+      background-color: #0f172a;
+      color: white;
+      font-size: 1.4rem;
+      padding: 16px 40px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    /* Result Screen */
+    .score {
+      font-size: 3.5rem;
+      font-weight: bold;
+      color: #2563eb;
+      margin: 20px 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <!-- 1. 시작 화면 -->
+    <div id="screen-start">
+      <h1 class="title">함께 만드는 환자안전<br>안심 O/X 퀴즈</h1>
+      <p class="subtitle">알기 쉬운 건강 및 복약 관리 수칙을 확인해 보세요!</p>
+      <button class="btn-start" onclick="startQuiz()">퀴즈 시작하기</button>
+    </div>
+
+    <!-- 2. 퀴즈 화면 -->
+    <div id="screen-quiz" class="hidden">
+      <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+      </div>
+      <div class="q-number" id="q-number">문제 1 / 5</div>
+      <div class="question" id="q-text">질문 텍스트가 들어갑니다.</div>
+
+      <div class="ox-container">
+        <button class="btn-ox btn-o" onclick="checkAnswer(true)">O</button>
+        <button class="btn-ox btn-x" onclick="checkAnswer(false)">X</button>
+      </div>
+    </div>
+
+    <!-- 3. 결과 화면 -->
+    <div id="screen-result" class="hidden">
+      <h1 class="title">수고하셨습니다!</h1>
+      <p class="subtitle">모든 환자안전 수칙 퀴즈를 완료하셨습니다.</p>
+      <div class="score" id="final-score">5 / 5</div>
+      <p class="subtitle" style="margin-bottom: 30px;">안심 선물 꾸러미를 받아가세요!</p>
+      <button class="btn-start" onclick="restartQuiz()">처음으로 돌아가기</button>
+    </div>
+
+    <!-- 해설 팝업 모달 -->
+    <div class="feedback-modal" id="feedback-modal">
+      <div class="feedback-icon" id="fb-icon">⭕</div>
+      <div class="feedback-title" id="fb-title">정답입니다!</div>
+      <div class="feedback-desc" id="fb-desc">해설 내용이 여기에 들어갑니다.</div>
+      <button class="btn-next" onclick="nextQuestion()">다음 문제</button>
+    </div>
+  </div>
+
+  <script>
+    // 퀴즈 데이터 정의 (5문항)
+    const quizData = [
+      {
+        q: "병원에서 처방받은 약 외에 평소 먹고 있는 영양제나 건강기능식품은 의사 선생님께 안 알려줘도 된다?",
+        a: false,
+        desc: "<b>정답은 X입니다!</b><br>영양제나 건강기능식품도 처방약과 함께 먹으면 영향을 줄 수 있으므로 진료 시 꼭 말씀해 주셔야 합니다."
+      },
+      {
+        q: "병원 방문 전에 궁금한 점이나 최근 나타난 증상을 미리 메모해 가는 것은 안전한 치료에 도움이 된다?",
+        a: true,
+        desc: "<b>정답은 O입니다!</b><br>증상과 질문을 미리 적어오시면 진료 시 놓치는 부분 없이 정확한 안내를 받으실 수 있습니다."
+      },
+      {
+        q: "진료 중 궁금한 점이 생겨도 진료 시간이 늦어질 수 있으니 참고 질문하지 않는 것이 좋다?",
+        a: false,
+        desc: "<b>정답은 X입니다!</b><br>궁금하거나 이해가 안 되는 부분은 망설이지 말고 적극적으로 질문해 주셔야 안전합니다."
+      },
+      {
+        q: "의사 선생님의 설명을 들은 후, 내가 이해한 내용을 말로 직접 다시 설명(되말하기)해 보는 것이 좋다?",
+        a: true,
+        desc: "<b>정답은 O입니다!</b><br>이해한 내용을 직접 되말해 보면 놓친 복약법이나 치료 계획을 정확하게 재확인할 수 있습니다."
+      },
+      {
+        q: "다른 병원에 진료를 받으러 갈 때는 이전 병원의 검사 결과나 소견서 자료를 챙겨서 전달해야 한다?",
+        a: true,
+        desc: "<b>정답은 O입니다!</b><br>기존 기록을 전달해주시면 불필요한 중복 검사를 줄이고 정확한 치료를 이어갈 수 있습니다."
+      }
+    ];
+
+    let currentQ = 0;
+    let score = 0;
+
+    function startQuiz() {
+      document.getElementById('screen-start').classList.add('hidden');
+      document.getElementById('screen-quiz').classList.remove('hidden');
+      currentQ = 0;
+      score = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = quizData[currentQ];
+      document.getElementById('q-number').innerText = `문제 ${currentQ + 1} / ${quizData.length}`;
+      document.getElementById('q-text').innerText = q.q;
+      
+      const progressPercent = ((currentQ) / quizData.length) * 100;
+      document.getElementById('progress').style.width = `${progressPercent}%`;
+    }
+
+    function checkAnswer(userAnswer) {
+      const q = quizData[currentQ];
+      const isCorrect = (userAnswer === q.a);
+      
+      if (isCorrect) score++;
+
+      const modal = document.getElementById('feedback-modal');
+      const icon = document.getElementById('fb-icon');
+      const title = document.getElementById('fb-title');
+      const desc = document.getElementById('fb-desc');
+
+      if (isCorrect) {
+        icon.innerText = "⭕";
+        title.innerText = "정답입니다!";
+        title.style.color = "#16a34a";
+      } else {
+        icon.innerText = "❌";
+        title.innerText = "아쉽네요!";
+        title.style.color = "#dc2626";
+      }
+
+      desc.innerHTML = q.desc;
+      modal.style.display = 'flex';
+    }
+
+    function nextQuestion() {
+      document.getElementById('feedback-modal').style.display = 'none';
+      currentQ++;
+
+      if (currentQ < quizData.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById('screen-quiz').classList.add('hidden');
+      document.getElementById('screen-result').classList.remove('hidden');
+      document.getElementById('final-score').innerText = `${score} / ${quizData.length} 점`;
+    }
+
+    function restartQuiz() {
+      document.getElementById('screen-result').classList.add('hidden');
+      document.getElementById('screen-start').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
