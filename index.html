@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>인공신장실 올바른 복약 O/X 퀴즈</title>
+  <!-- 폭죽 애니메이션 라이브러리 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -141,7 +143,7 @@
     }
 
     .feedback-title {
-      font-size: 2.2rem;
+      font-size: 2.3rem;
       font-weight: bold;
       margin-bottom: 16px;
     }
@@ -205,8 +207,8 @@
 
     <!-- 해설 팝업 모달 -->
     <div class="feedback-modal" id="feedback-modal">
-      <div class="feedback-icon" id="fb-icon">⭕</div>
-      <div class="feedback-title" id="fb-title">정답입니다!</div>
+      <div class="feedback-icon" id="fb-icon">🎉</div>
+      <div class="feedback-title" id="fb-title">축하합니다! 정답입니다!</div>
       <div class="feedback-desc" id="fb-desc">
         <b>인 결합제</b>는 위속에서 음식물과 직접 섞여야 인을 끌고 대변으로 배출됩니다.<br><br>
         따라서 공복에 드시지 말고, 반드시 <b>'식사 중간'</b>이나 <b>'식사 직후'</b>에 복용하셔야 효과가 있습니다!
@@ -221,6 +223,24 @@
       document.getElementById('screen-quiz').classList.remove('hidden');
     }
 
+    // 폭죽 효과 함수
+    function fireCelebration() {
+      const count = 200;
+      const defaults = { origin: { y: 0.7 } };
+
+      function fire(particleRatio, opts) {
+        confetti(Object.assign({}, defaults, opts, {
+          particleCount: Math.floor(count * particleRatio)
+        }));
+      }
+
+      fire(0.25, { spread: 26, startVelocity: 55 });
+      fire(0.2, { spread: 60 });
+      fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+      fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+      fire(0.1, { spread: 120, startVelocity: 45 });
+    }
+
     function checkAnswer(userAnswer) {
       const isCorrect = (userAnswer === true); // 정답은 O
       const modal = document.getElementById('feedback-modal');
@@ -228,9 +248,12 @@
       const title = document.getElementById('fb-title');
 
       if (isCorrect) {
-        icon.innerText = "⭕";
-        title.innerText = "정답입니다!";
+        icon.innerText = "🎉";
+        title.innerText = "축하합니다! 정답입니다!";
         title.style.color = "#16a34a";
+        
+        // 정답일 때 폭죽 터뜨리기
+        fireCelebration();
       } else {
         icon.innerText = "❌";
         title.innerText = "아쉽네요! (정답은 O)";
