@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>인공신장실 올바른 복약 O/X 퀴즈</title>
-  <!-- 폭죽 애니메이션 라이브러리 CDN -->
+  <!-- 폭죽 애니메이션 라이브러리 -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     * {
@@ -20,16 +20,16 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 20px;
+      padding: 15px;
     }
 
     .card {
       background: #ffffff;
       width: 100%;
-      max-width: 800px;
+      max-width: 850px;
       border-radius: 24px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-      padding: 45px 35px;
+      padding: 30px 25px;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -46,7 +46,7 @@
     .subtitle {
       font-size: 1.3rem;
       color: #64748b;
-      margin-bottom: 40px;
+      margin-bottom: 35px;
       word-break: keep-all;
     }
 
@@ -55,7 +55,7 @@
       color: white;
       font-size: 1.8rem;
       font-weight: bold;
-      padding: 22px 60px;
+      padding: 20px 60px;
       border: none;
       border-radius: 50px;
       cursor: pointer;
@@ -72,35 +72,40 @@
       display: inline-block;
       background-color: #e0e7ff;
       color: #3730a3;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: bold;
-      padding: 8px 20px;
+      padding: 6px 18px;
       border-radius: 30px;
-      margin-bottom: 25px;
+      margin-bottom: 15px;
     }
 
-    .question {
-      font-size: 1.9rem;
-      color: #0f172a;
-      line-height: 1.6;
-      margin-bottom: 45px;
-      word-break: keep-all;
-      font-weight: 700;
+    .quiz-image-container {
+      width: 100%;
+      margin-bottom: 20px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .quiz-image {
+      width: 100%;
+      height: auto;
+      display: block;
     }
 
     .ox-container {
       display: flex;
-      gap: 24px;
+      gap: 20px;
       justify-content: center;
     }
 
     .btn-ox {
       flex: 1;
-      height: 180px;
-      font-size: 5rem;
+      height: 140px;
+      font-size: 4.5rem;
       font-weight: bold;
       border: 4px solid #cbd5e1;
-      border-radius: 24px;
+      border-radius: 20px;
       background-color: #f8fafc;
       cursor: pointer;
       transition: all 0.2s;
@@ -130,7 +135,7 @@
       width: 100%;
       height: 100%;
       background: rgba(255, 255, 255, 0.98);
-      padding: 40px;
+      padding: 30px;
       flex-direction: column;
       justify-content: center;
       align-items: center;
@@ -143,16 +148,16 @@
     }
 
     .feedback-title {
-      font-size: 2.3rem;
+      font-size: 2.2rem;
       font-weight: bold;
       margin-bottom: 16px;
     }
 
     .feedback-desc {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       color: #334155;
       line-height: 1.6;
-      margin-bottom: 35px;
+      margin-bottom: 30px;
       word-break: keep-all;
     }
 
@@ -161,7 +166,7 @@
       color: white;
       font-size: 1.5rem;
       font-weight: bold;
-      padding: 18px 50px;
+      padding: 16px 45px;
       border: none;
       border-radius: 16px;
       cursor: pointer;
@@ -178,17 +183,20 @@
     <!-- 1. 시작 화면 -->
     <div id="screen-start">
       <h1 class="title">투석 환자를 위한<br>올바른 복약 O/X 퀴즈</h1>
-      <p class="subtitle">인 결합제(인 낮추는 약) 올바른 복용법을 확인해보세요!</p>
+      <p class="subtitle">인 약(인을 낮추는 약)의 올바른 복용법을 확인해보세요!</p>
       <button class="btn-start" onclick="startQuiz()">퀴즈 시작하기</button>
     </div>
 
     <!-- 2. 퀴즈 화면 -->
     <div id="screen-quiz" class="hidden">
       <div class="badge">투석 안심 복약 퀴즈</div>
-      <div class="question">
-        인 결합제(인을 낮추는 약)는 음식 속의 인을 몸 밖으로 배출하기 위해 <span style="color:#2563eb;">'식사 중'</span>이나 <span style="color:#2563eb;">'식사 바로 직후'</span>에 복용해야 한다?
+      
+      <!-- 질문 이미지 영역 -->
+      <div class="quiz-image-container">
+        <img src="quiz-image.png" alt="인 약 복용법 퀴즈 이미지" class="quiz-image">
       </div>
 
+      <!-- O/X 버튼 영역 -->
       <div class="ox-container">
         <button class="btn-ox btn-o" onclick="checkAnswer(true)">O</button>
         <button class="btn-ox btn-x" onclick="checkAnswer(false)">X</button>
@@ -200,9 +208,9 @@
       <h1 class="title">참여해 주셔서 감사합니다!</h1>
       <p class="subtitle" style="font-size: 1.5rem; color: #1e293b; margin-top: 20px;">
         올바른 복약 타이밍을 확인하셨습니다.<br>
-        <b>안심 복약케이스</b>를 받아가세요!
+        <b>안심 선물 꾸러미</b>를 받아가세요!
       </p>
-      <button class="btn-start" style="margin-top: 30px;" onclick="restartQuiz()">처음으로 돌아가기</button>
+      <button class="btn-start" style="margin-top: 25px;" onclick="restartQuiz()">처음으로 돌아가기</button>
     </div>
 
     <!-- 해설 팝업 모달 -->
@@ -210,7 +218,7 @@
       <div class="feedback-icon" id="fb-icon">🎉</div>
       <div class="feedback-title" id="fb-title">축하합니다! 정답입니다!</div>
       <div class="feedback-desc" id="fb-desc">
-        <b>인 결합제</b>는 위속에서 음식물과 직접 섞여야 인을 끌고 대변으로 배출됩니다.<br><br>
+        <b>인 약</b>은 위속에서 음식물과 직접 섞여야 인을 끌고 대변으로 배출됩니다.<br><br>
         따라서 공복에 드시지 말고, 반드시 <b>'식사 중간'</b>이나 <b>'식사 직후'</b>에 복용하셔야 효과가 있습니다!
       </div>
       <button class="btn-next" onclick="showResult()">완료</button>
@@ -223,7 +231,7 @@
       document.getElementById('screen-quiz').classList.remove('hidden');
     }
 
-    // 폭죽 효과 함수
+    // 폭죽 연출 함수
     function fireCelebration() {
       const count = 200;
       const defaults = { origin: { y: 0.7 } };
@@ -242,7 +250,7 @@
     }
 
     function checkAnswer(userAnswer) {
-      const isCorrect = (userAnswer === true); // 정답은 O
+      const isCorrect = (userAnswer === true); // 정답 O
       const modal = document.getElementById('feedback-modal');
       const icon = document.getElementById('fb-icon');
       const title = document.getElementById('fb-title');
@@ -251,8 +259,6 @@
         icon.innerText = "🎉";
         title.innerText = "축하합니다! 정답입니다!";
         title.style.color = "#16a34a";
-        
-        // 정답일 때 폭죽 터뜨리기
         fireCelebration();
       } else {
         icon.innerText = "❌";
