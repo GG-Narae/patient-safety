@@ -85,12 +85,28 @@
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      background-color: #f8fafc;
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .quiz-image {
       width: 100%;
       height: auto;
       display: block;
+    }
+
+    /* 이미지 실패 시 보여줄 대체 텍스트 */
+    .fallback-text {
+      display: none;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.6;
+      padding: 25px 15px;
+      word-break: keep-all;
     }
 
     .ox-container {
@@ -193,7 +209,10 @@
       
       <!-- 질문 이미지 영역 -->
       <div class="quiz-image-container">
-        <img src="quiz-image.png" alt="인 약 복용법 퀴즈 이미지" class="quiz-image">
+        <img id="quiz-img" src="quiz-image.png" alt="인 약 복용법 퀴즈 이미지" class="quiz-image" onerror="handleImageError()">
+        <div id="fallback-text" class="fallback-text">
+          음식 속 인을 잡아주는 <b>'인 약 (인을 낮추는 약)'</b>은 음식 속 인을 몸 밖으로 배출하기 위해 <span style="color:#2563eb;">'식사 중간'</span>이나 <span style="color:#2563eb;">'식사 바로 직후'</span>에 복용해야 한다?
+        </div>
       </div>
 
       <!-- O/X 버튼 영역 -->
@@ -229,6 +248,12 @@
     function startQuiz() {
       document.getElementById('screen-start').classList.add('hidden');
       document.getElementById('screen-quiz').classList.remove('hidden');
+    }
+
+    // 이미지 로드 실패 시 예쁘게 다듬어진 텍스트 문제로 자동 대체하는 안전장치
+    function handleImageError() {
+      document.getElementById('quiz-img').style.display = 'none';
+      document.getElementById('fallback-text').style.display = 'block';
     }
 
     // 폭죽 연출 함수
